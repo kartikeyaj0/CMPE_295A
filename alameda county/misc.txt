@@ -1,0 +1,39 @@
+Mean/Max/Min Temperature, Precipitation, Heating/Cooling days
+- https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/county/time-series/CA-001/
+- Monthly data
+- available since 1895
+
+Electricity data
+- total annual consumption per county available on https://ecdms.energy.ca.gov/elecbycounty.aspx
+- only available since 1990
+
+TCI data
+- https://www.star.nesdis.noaa.gov/smcd/emb/vci/VH/vh_adminMean.php?type=Province_Weekly_MeanPlot
+- only available for each state
+- available as weekly and annually averaged data
+- avaiable since 1982
+
+Reservoir levels (CA only)
+- https://cdec.water.ca.gov/reportapp/javareports?name=RES
+- daily (at midnight) reservoir levels are available
+- we do not know in which county a reservoir lies, and which county is served by which reservoir. Many reservoirs lie in multiple counties.
+- monthly data available for each water year. Tried fetching data as back as 1973.
+https://cdec.water.ca.gov/dynamicapp/QueryWY?Stations=CLE&SensorNums=15&End=2022-12-01&span=50
+- Reservoir info: https://cdec.water.ca.gov/reportapp/javareports?name=ResInfo
+
+Electricity cost per KWH-
+- monthly averaged data available on US Bureau of labor statistics under CPI data.
+- not available for counties
+- only available for selected areas, eg: Area: San Francisco-Oakland-Hayward, CA
+- available since Nov 1978
+
+
+import re
+import requests
+
+reservoir_county_dict = {}
+
+for i in reservoir_station_id:
+    r = requests.get('https://cdec.water.ca.gov/dynamicapp/staMeta?station_id={}'.format(i))
+    a = re.search("County</b></td><td>(\w+)</td></tr>", r.text)
+    reservoir_county_dict[i] = a.groups()[0]    
